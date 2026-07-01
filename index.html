@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Planos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --azul-claro:#5EA8E5;
+    --azul-claro-suave:#EAF4FD;
+    --azul-claro-forte:#3B8AD1;
+    --branco:#FFFFFF;
+    --verde-escuro:#0F4C3A;
+    --verde-escuro-suave:#E4F0EC;
+    --cinza-texto:#4A5568;
+    --cinza-linha:#E2E8F0;
+    --erro:#D64545;
+    --radius:20px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:linear-gradient(160deg, var(--azul-claro-suave) 0%, #F7FBFF 45%, #FFFFFF 100%);
+    color:#1A202C;
+    min-height:100vh;
+    padding:32px 16px 80px;
+  }
+  h1,h2,h3{font-family:'Sora',sans-serif;margin:0;}
+  .wrap{max-width:1080px;margin:0 auto;}
+  header{
+    text-align:center;
+    margin-bottom:32px;
+  }
+  header .eyebrow{
+    display:inline-block;
+    background:var(--azul-claro-forte);
+    color:#fff;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    padding:6px 14px;
+    border-radius:999px;
+    margin-bottom:12px;
+  }
+  header h1{font-size:32px;color:var(--verde-escuro);}
+  header p{color:var(--cinza-texto);margin-top:6px;font-size:15px;}
+
+  .grid{
+    display:grid;
+    grid-template-columns:1.6fr 1fr;
+    gap:24px;
+    align-items:start;
+  }
+  @media (max-width:860px){
+    .grid{grid-template-columns:1fr;}
+  }
+
+  .card{
+    background:var(--branco);
+    border-radius:var(--radius);
+    padding:24px;
+    box-shadow:0 4px 20px rgba(59,138,209,0.08);
+    border:1px solid var(--cinza-linha);
+    margin-bottom:24px;
+  }
+  .card h2{
+    font-size:18px;
+    color:var(--verde-escuro);
+    margin-bottom:4px;
+  }
+  .card .desc{
+    font-size:13px;
+    color:var(--cinza-texto);
+    margin-bottom:18px;
+  }
+
+  label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    color:#2D3748;
+    margin-bottom:6px;
+  }
+  input[type="number"], input[type="text"], select{
+    width:100%;
+    padding:11px 14px;
+    border:1.5px solid var(--cinza-linha);
+    border-radius:12px;
+    font-size:14px;
+    font-family:'Inter',sans-serif;
+    background:#FBFDFF;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  input:focus, select:focus{
+    outline:none;
+    border-color:var(--azul-claro-forte);
+    box-shadow:0 0 0 3px rgba(94,168,229,0.2);
+  }
+  .field{margin-bottom:16px;}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .hint{font-size:12px;color:var(--azul-claro-forte);margin-top:6px;font-weight:600;}
+
+  .toggle-btn{
+    background:none;
+    border:none;
+    color:var(--azul-claro-forte);
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+    padding:0;
+    margin-top:4px;
+    text-decoration:underline;
+  }
+  .hidden{display:none !important;}
+
+  .recursos-list{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  @media (max-width:520px){.recursos-list{grid-template-columns:1fr;}}
+  .recurso-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 14px;
+    border:1.5px solid var(--cinza-linha);
+    border-radius:14px;
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+    font-size:13px;
+  }
+  .recurso-item:has(input:checked){
+    border-color:var(--azul-claro-forte);
+    background:var(--azul-claro-suave);
+  }
+  .recurso-item input{width:16px;height:16px;accent-color:var(--azul-claro-forte);flex-shrink:0;}
+  .recurso-item .r-name{font-weight:600;flex:1;}
+  .recurso-item .r-price{color:var(--cinza-texto);font-size:12px;white-space:nowrap;}
+
+  .divider{border:none;border-top:1px solid var(--cinza-linha);margin:20px 0;}
+
+  /* Painel resumo */
+  .summary{
+    position:sticky;
+    top:24px;
+    background:var(--verde-escuro);
+    color:#fff;
+    border-radius:var(--radius);
+    padding:26px;
+    box-shadow:0 10px 30px rgba(15,76,58,0.25);
+  }
+  .summary h2{color:#fff;font-size:18px;margin-bottom:18px;}
+  .summary-line{
+    display:flex;
+    justify-content:space-between;
+    font-size:13px;
+    padding:7px 0;
+    color:#CFE8DD;
+  }
+  .summary-line.total-auto{
+    border-top:1px solid rgba(255,255,255,0.15);
+    margin-top:8px;
+    padding-top:12px;
+    font-weight:700;
+    color:#fff;
+    font-size:14px;
+  }
+  .periodicidade{
+    display:flex;
+    gap:8px;
+    margin:18px 0 14px;
+  }
+  .periodicidade label{
+    flex:1;
+    text-align:center;
+    background:rgba(255,255,255,0.08);
+    border:1.5px solid rgba(255,255,255,0.2);
+    border-radius:12px;
+    padding:9px 4px;
+    font-size:12px;
+    cursor:pointer;
+    margin:0;
+    color:#CFE8DD;
+    transition:all .15s;
+  }
+  .periodicidade input{display:none;}
+  .periodicidade label:has(input:checked){
+    background:var(--azul-claro-forte);
+    border-color:var(--azul-claro-forte);
+    color:#fff;
+  }
+  .ajuste-box{
+    background:rgba(255,255,255,0.06);
+    border-radius:14px;
+    padding:14px;
+    margin-top:10px;
+  }
+  .ajuste-box .field-row{margin-bottom:10px;}
+  .ajuste-box label{color:#CFE8DD;font-size:12px;}
+  .ajuste-box input, .ajuste-box select{
+    background:rgba(255,255,255,0.1);
+    border:1.5px solid rgba(255,255,255,0.2);
+    color:#fff;
+    font-size:13px;
+  }
+  .ajuste-box input::placeholder{color:rgba(255,255,255,0.5);}
+  .ajuste-box input:focus, .ajuste-box select:focus{
+    border-color:var(--azul-claro);
+    box-shadow:0 0 0 3px rgba(94,168,229,0.25);
+  }
+  .ajuste-box select option{color:#000;}
+
+  .total-manual-wrap{margin-top:16px;}
+  .total-manual-wrap input{
+    font-size:20px;
+    font-weight:800;
+    font-family:'Sora',sans-serif;
+    background:rgba(255,255,255,0.1);
+    border:1.5px solid rgba(255,255,255,0.25);
+    color:#fff;
+    padding:12px 14px;
+  }
+  .total-manual-wrap .lbl{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .reset-link{
+    font-size:11px;
+    color:var(--azul-claro);
+    cursor:pointer;
+    text-decoration:underline;
+    background:none;
+    border:none;
+    font-weight:600;
+  }
+
+  .final-box{
+    margin-top:20px;
+    background:var(--azul-claro);
+    border-radius:16px;
+    padding:18px 20px;
+    text-align:center;
+  }
+  .final-box .lbl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#0F3E63;}
+  .final-box .val{font-family:'Sora',sans-serif;font-size:30px;font-weight:800;color:#0B2540;margin-top:4px;}
+  .final-box .sub{font-size:11px;color:#0F3E63;margin-top:2px;}
+
+  .badge-info{
+    font-size:11px;
+    color:var(--azul-claro-forte);
+    margin-top:4px;
+    font-weight:600;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Uso interno</span>
+    <h1>Calculadora de Planos</h1>
+    <p>Monte o plano do cliente com base em emissões, recursos adicionais e periodicidade.</p>
+  </header>
+
+  <div class="grid">
+    <div>
+      <!-- EMISSÕES -->
+      <div class="card">
+        <h2>Número de emissões</h2>
+        <p class="desc">Digite a quantidade desejada. Se não houver um plano tabelado exato, o valor é calculado automaticamente com base no unitário do plano seguinte.</p>
+        <div class="field">
+          <label for="emissoes">Quantidade de emissões</label>
+          <input type="number" id="emissoes" min="0" placeholder="Ex: 1100">
+          <div class="badge-info" id="emissoesInfo"></div>
+        </div>
+        <button type="button" class="toggle-btn" id="btnCustomUnit">Definir valor unitário personalizado (acima de 5.000)</button>
+        <div class="field hidden" id="customUnitWrap" style="margin-top:10px;">
+          <label for="customUnit">Valor unitário por emissão (R$)</label>
+          <input type="number" id="customUnit" min="0" step="0.0001" placeholder="Ex: 0.25">
+        </div>
+      </div>
+
+      <!-- RECURSOS -->
+      <div class="card">
+        <h2>Recursos adicionais</h2>
+        <p class="desc">Opcionais. Cada recurso é único no plano (exceto Busca garantida).</p>
+        <div class="recursos-list" id="recursosList"></div>
+
+        <hr class="divider">
+
+        <div class="field-row">
+          <div class="field">
+            <label for="buscaQtd">Busca garantida (nº de buscas)</label>
+            <input type="number" id="buscaQtd" min="0" placeholder="Ex: 50">
+          </div>
+          <div class="field">
+            <label>Valor (R$ 0,97/busca)</label>
+            <input type="text" id="buscaValorDisplay" disabled placeholder="R$ 0,00">
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="field-row">
+          <div class="field">
+            <label for="ciotQtd">Recurso CIOT — quantidade</label>
+            <input type="number" id="ciotQtd" min="0" placeholder="Ex: 350">
+            <div class="badge-info" id="ciotInfo"></div>
+          </div>
+          <div class="field">
+            <label>Valor CIOT</label>
+            <input type="text" id="ciotValorDisplay" disabled placeholder="R$ 0,00">
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="field">
+          <label for="valePedagio">Vale-pedágio (valor manual)</label>
+          <input type="number" id="valePedagio" min="0" placeholder="Ex: 150.00">
+        </div>
+      </div>
+    </div>
+
+    <!-- RESUMO -->
+    <div class="summary">
+      <h2>Resumo do plano</h2>
+      <div class="summary-line"><span>Emissões</span><span id="sEmissoes">R$ 0,00</span></div>
+      <div class="summary-line"><span>Recursos fixos</span><span id="sRecursos">R$ 0,00</span></div>
+      <div class="summary-line"><span>Busca garantida</span><span id="sBusca">R$ 0,00</span></div>
+      <div class="summary-line"><span>CIOT</span><span id="sCiot">R$ 0,00</span></div>
+      <div class="summary-line"><span>Vale-pedágio</span><span id="sPedagio">R$ 0,00</span></div>
+      <div class="summary-line total-auto"><span>Total automático (mensal)</span><span id="sAuto">R$ 0,00</span></div>
+
+      <div class="ajuste-box">
+        <div class="field-row">
+          <div class="field">
+            <label for="descValor">Desconto</label>
+            <input type="number" id="descValor" min="0" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="descTipo">Tipo</label>
+            <select id="descTipo">
+              <option value="R$">R$</option>
+              <option value="%">%</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row" style="margin-bottom:0;">
+          <div class="field" style="margin-bottom:0;">
+            <label for="acrValor">Acréscimo</label>
+            <input type="number" id="acrValor" min="0" placeholder="0">
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label for="acrTipo">Tipo</label>
+            <select id="acrTipo">
+              <option value="R$">R$</option>
+              <option value="%">%</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="total-manual-wrap">
+        <div class="lbl">
+          <label for="totalManual" style="color:#CFE8DD;">Total mensal (editável)</label>
+          <button type="button" class="reset-link" id="btnResetManual">recalcular</button>
+        </div>
+        <input type="text" id="totalManual" placeholder="R$ 0,00">
+      </div>
+
+      <div class="periodicidade">
+        <label><input type="radio" name="periodo" value="1" checked> Mensal</label>
+        <label><input type="radio" name="periodo" value="3"> Trimestral</label>
+        <label><input type="radio" name="periodo" value="12"> Anual</label>
+      </div>
+
+      <div class="final-box">
+        <div class="lbl">Valor final do plano</div>
+        <div class="val" id="totalFinal">R$ 0,00</div>
+        <div class="sub" id="totalFinalSub">mensal</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---------- Dados ----------
+const tiersEmissoes = [
+  {limit:30, price:77},
+  {limit:100, price:137},
+  {limit:200, price:207},
+  {limit:300, price:267},
+  {limit:400, price:337},
+  {limit:500, price:367},
+  {limit:600, price:407},
+  {limit:700, price:437},
+  {limit:800, price:467},
+  {limit:900, price:507},
+  {limit:1000, price:547},
+  {limit:1500, price:657},
+  {limit:2000, price:757},
+  {limit:2500, price:847},
+  {limit:3000, price:917},
+  {limit:3500, price:987},
+  {limit:4000, price:1057},
+  {limit:4500, price:1097},
+  {limit:5000, price:1137},
+];
+
+const ciotTiers = [
+  {limit:30, price:77},
+  {limit:100, price:97},
+  {limit:200, price:147},
+  {limit:400, price:197},
+];
+
+const recursosFixos = [
+  {id:'edi', nome:'Integração EDI', preco:67},
+  {id:'averb', nome:'Averbação automática', preco:47},
+  {id:'fin', nome:'Controle financeiro', preco:37},
+  {id:'lote', nome:'Emissão em lote', preco:37},
+  {id:'frete', nome:'Tabela de frete', preco:37},
+  {id:'coleta', nome:'Ordem de coleta', preco:27},
+  {id:'gnre', nome:'Emissão GNRe', preco:27},
+];
+
+const fmt = v => 'R$ ' + (v||0).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+// ---------- Render recursos ----------
+const recursosList = document.getElementById('recursosList');
+recursosFixos.forEach(r=>{
+  const el = document.createElement('label');
+  el.className = 'recurso-item';
+  el.innerHTML = `
+    <input type="checkbox" data-preco="${r.preco}" id="rec_${r.id}">
+    <span class="r-name">${r.nome}</span>
+    <span class="r-price">${fmt(r.preco)}</span>
+  `;
+  recursosList.appendChild(el);
+});
+
+// ---------- Elementos ----------
+const emissoesInput = document.getElementById('emissoes');
+const emissoesInfo = document.getElementById('emissoesInfo');
+const btnCustomUnit = document.getElementById('btnCustomUnit');
+const customUnitWrap = document.getElementById('customUnitWrap');
+const customUnitInput = document.getElementById('customUnit');
+
+const buscaQtd = document.getElementById('buscaQtd');
+const buscaValorDisplay = document.getElementById('buscaValorDisplay');
+
+const ciotQtd = document.getElementById('ciotQtd');
+const ciotInfo = document.getElementById('ciotInfo');
+const ciotValorDisplay = document.getElementById('ciotValorDisplay');
+
+const valePedagio = document.getElementById('valePedagio');
+
+const descValor = document.getElementById('descValor');
+const descTipo = document.getElementById('descTipo');
+const acrValor = document.getElementById('acrValor');
+const acrTipo = document.getElementById('acrTipo');
+
+const totalManual = document.getElementById('totalManual');
+const btnResetManual = document.getElementById('btnResetManual');
+
+const sEmissoes = document.getElementById('sEmissoes');
+const sRecursos = document.getElementById('sRecursos');
+const sBusca = document.getElementById('sBusca');
+const sCiot = document.getElementById('sCiot');
+const sPedagio = document.getElementById('sPedagio');
+const sAuto = document.getElementById('sAuto');
+const totalFinal = document.getElementById('totalFinal');
+const totalFinalSub = document.getElementById('totalFinalSub');
+
+let manualOverride = false; // se true, totalManual dita o valor ajustado
+let suppressEvents = false;
+
+btnCustomUnit.addEventListener('click', ()=>{
+  customUnitWrap.classList.toggle('hidden');
+});
+
+// ---------- Cálculos ----------
+function calcEmissoes(qty, customUnit){
+  if(!qty || qty<=0) return {value:0, info:'', error:false};
+  const exact = tiersEmissoes.find(t=>t.limit===qty);
+  if(exact) return {value:exact.price, info:`Plano tabelado (até ${exact.limit.toLocaleString('pt-BR')} emissões)`, error:false};
+
+  if(qty < 300){
+    return {value:0, info:'Personalizado só é permitido acima de 300 emissões. Selecione um valor tabelado (30, 100, 200 ou 300).', error:true};
+  }
+
+  if(qty>5000){
+    const unit = (customUnit && customUnit>0) ? customUnit : (1137/5000);
+    return {value: unit*qty, info:`Personalizado acima de 5.000 · unitário ${fmt(unit)}`, error:false};
+  }
+
+  // Interpolação linear entre o plano anterior e o seguinte (evita valor menor que plano inferior)
+  const prev = [...tiersEmissoes].reverse().find(t=>t.limit<qty);
+  const next = tiersEmissoes.find(t=>t.limit>qty);
+  const fraction = (qty - prev.limit) / (next.limit - prev.limit);
+  const value = prev.price + (next.price - prev.price) * fraction;
+  return {value, info:`Personalizado · interpolado entre até ${prev.limit.toLocaleString('pt-BR')} (${fmt(prev.price)}) e até ${next.limit.toLocaleString('pt-BR')} (${fmt(next.price)})`, error:false};
+}
+
+function calcCiot(qty){
+  if(!qty || qty<=0) return {value:0, info:''};
+  const exact = ciotTiers.find(t=>t.limit===qty);
+  if(exact) return {value:exact.price, info:`Tabelado (até ${exact.limit})`};
+  if(qty>400) return {value: qty*0.47, info:`Personalizado · R$0,47/CIOT`};
+  const next = ciotTiers.find(t=>t.limit>qty);
+  return {value: next.price, info:`Dentro da faixa até ${next.limit}`};
+}
+
+function calcRecursosFixos(){
+  let total = 0;
+  document.querySelectorAll('#recursosList input[type=checkbox]').forEach(cb=>{
+    if(cb.checked) total += parseFloat(cb.dataset.preco);
+  });
+  return total;
+}
+
+function calcAll(){
+  const qtyEmissoes = parseFloat(emissoesInput.value) || 0;
+  const customUnit = parseFloat(customUnitInput.value) || 0;
+  const emissoesRes = calcEmissoes(qtyEmissoes, customUnit);
+  emissoesInfo.textContent = emissoesRes.info;
+  emissoesInfo.style.color = emissoesRes.error ? 'var(--erro)' : 'var(--azul-claro-forte)';
+  if(qtyEmissoes>5000) customUnitWrap.classList.remove('hidden');
+
+  const recursosSum = calcRecursosFixos();
+
+  const buscaN = parseFloat(buscaQtd.value) || 0;
+  const buscaVal = buscaN * 0.97;
+  buscaValorDisplay.value = fmt(buscaVal);
+
+  const ciotN = parseFloat(ciotQtd.value) || 0;
+  const ciotRes = calcCiot(ciotN);
+  ciotInfo.textContent = ciotRes.info;
+  ciotValorDisplay.value = fmt(ciotRes.value);
+
+  const pedagioVal = parseFloat(valePedagio.value) || 0;
+
+  const baseAuto = emissoesRes.value + recursosSum + buscaVal + ciotRes.value + pedagioVal;
+
+  sEmissoes.textContent = fmt(emissoesRes.value);
+  sRecursos.textContent = fmt(recursosSum);
+  sBusca.textContent = fmt(buscaVal);
+  sCiot.textContent = fmt(ciotRes.value);
+  sPedagio.textContent = fmt(pedagioVal);
+  sAuto.textContent = fmt(baseAuto);
+
+  // Ajustes
+  let valorAjustado;
+  if(manualOverride){
+    valorAjustado = parseFloat((totalManual.value||'').replace(/[^\d,.-]/g,'').replace(',','.')) || 0;
+    const diff = valorAjustado - baseAuto;
+    suppressEvents = true;
+    if(diff >= 0){
+      acrTipo.value = 'R$';
+      acrValor.value = diff.toFixed(2);
+      descValor.value = '';
+    } else {
+      descTipo.value = 'R$';
+      descValor.value = Math.abs(diff).toFixed(2);
+      acrValor.value = '';
+    }
+    suppressEvents = false;
+  } else {
+    const dVal = parseFloat(descValor.value) || 0;
+    const aVal = parseFloat(acrValor.value) || 0;
+    const dAplicado = descTipo.value === '%' ? baseAuto * dVal/100 : dVal;
+    const aAplicado = acrTipo.value === '%' ? baseAuto * aVal/100 : aVal;
+    valorAjustado = baseAuto - dAplicado + aAplicado;
+    suppressEvents = true;
+    totalManual.value = fmt(valorAjustado);
+    suppressEvents = false;
+  }
+
+  const periodo = parseInt(document.querySelector('input[name=periodo]:checked').value);
+  const totalFinalVal = valorAjustado * periodo;
+  totalFinal.textContent = fmt(totalFinalVal);
+  totalFinalSub.textContent = periodo===1 ? 'mensal' : periodo===3 ? 'trimestral (cobrança única)' : 'anual (cobrança única)';
+}
+
+// ---------- Eventos ----------
+[emissoesInput, customUnitInput, buscaQtd, ciotQtd, valePedagio].forEach(el=>{
+  el.addEventListener('input', ()=>{ if(!suppressEvents) calcAll(); });
+});
+
+document.querySelectorAll('#recursosList input[type=checkbox]').forEach(cb=>{
+  cb.addEventListener('change', ()=>{ if(!suppressEvents) calcAll(); });
+});
+
+[descValor, descTipo, acrValor, acrTipo].forEach(el=>{
+  el.addEventListener('input', ()=>{
+    if(suppressEvents) return;
+    manualOverride = false;
+    calcAll();
+  });
+  el.addEventListener('change', ()=>{
+    if(suppressEvents) return;
+    manualOverride = false;
+    calcAll();
+  });
+});
+
+totalManual.addEventListener('input', ()=>{
+  if(suppressEvents) return;
+  manualOverride = true;
+  calcAll();
+});
+
+btnResetManual.addEventListener('click', ()=>{
+  manualOverride = false;
+  calcAll();
+});
+
+document.querySelectorAll('input[name=periodo]').forEach(r=>{
+  r.addEventListener('change', calcAll);
+});
+
+calcAll();
+</script>
+</body>
+</html>
