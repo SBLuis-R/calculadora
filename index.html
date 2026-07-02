@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadora de Planos</title>
+<title>Calculadora de Planos — Mobile</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -13,7 +13,6 @@
     --azul-claro-forte:#3B8AD1;
     --branco:#FFFFFF;
     --verde-escuro:#0F4C3A;
-    --verde-escuro-suave:#E4F0EC;
     --cinza-texto:#4A5568;
     --cinza-linha:#E2E8F0;
     --erro:#D64545;
@@ -26,14 +25,13 @@
     background:linear-gradient(160deg, var(--azul-claro-suave) 0%, #F7FBFF 45%, #FFFFFF 100%);
     color:#1A202C;
     min-height:100vh;
-    padding:32px 16px 80px;
+    padding:14px 14px 20px;
+    font-size:17px;
   }
   h1,h2,h3{font-family:'Sora',sans-serif;margin:0;}
-  .wrap{max-width:1080px;margin:0 auto;}
-  header{
-    text-align:center;
-    margin-bottom:32px;
-  }
+  .phone-wrap{max-width:1100px;margin:0 auto;}
+
+  header{text-align:center;margin-bottom:12px;}
   header .eyebrow{
     display:inline-block;
     background:var(--azul-claro-forte);
@@ -42,387 +40,357 @@
     font-weight:700;
     letter-spacing:.08em;
     text-transform:uppercase;
-    padding:6px 14px;
+    padding:5px 12px;
     border-radius:999px;
+    margin-bottom:6px;
+  }
+  header h1{font-size:22px;color:var(--verde-escuro);}
+
+  /* Steps nav */
+  .steps-nav{
+    display:flex;
+    gap:8px;
     margin-bottom:12px;
   }
-  header h1{font-size:32px;color:var(--verde-escuro);}
-  header p{color:var(--cinza-texto);margin-top:6px;font-size:15px;}
-
-  .grid{
-    display:grid;
-    grid-template-columns:1.6fr 1fr;
-    gap:24px;
-    align-items:start;
+  .step-btn{
+    flex:1;
+    background:var(--branco);
+    border:1.5px solid var(--cinza-linha);
+    border-radius:14px;
+    padding:9px 4px;
+    font-size:13px;
+    font-weight:700;
+    color:var(--cinza-texto);
+    cursor:pointer;
+    text-align:center;
   }
-  @media (max-width:860px){
-    .grid{grid-template-columns:1fr;}
+  .step-btn.active{
+    background:var(--azul-claro-forte);
+    border-color:var(--azul-claro-forte);
+    color:#fff;
+  }
+  .step-btn.done{
+    border-color:var(--verde-escuro);
+    color:var(--verde-escuro);
   }
 
   .card{
     background:var(--branco);
     border-radius:var(--radius);
-    padding:24px;
+    padding:26px 30px;
     box-shadow:0 4px 20px rgba(59,138,209,0.08);
     border:1px solid var(--cinza-linha);
-    margin-bottom:24px;
   }
-  .card h2{
-    font-size:18px;
-    color:var(--verde-escuro);
-    margin-bottom:4px;
-  }
-  .card .desc{
-    font-size:13px;
-    color:var(--cinza-texto);
-    margin-bottom:18px;
-  }
+  .card h2{font-size:19px;color:var(--verde-escuro);margin-bottom:4px;}
+  .card .desc{font-size:14px;color:var(--cinza-texto);margin-bottom:16px;line-height:1.4;}
 
-  label{
-    display:block;
-    font-size:13px;
-    font-weight:600;
-    color:#2D3748;
-    margin-bottom:6px;
-  }
+  .step-panel.hidden{display:none;}
+
+  label{display:block;font-size:15px;font-weight:600;color:#2D3748;margin-bottom:7px;}
   input[type="number"], input[type="text"], select{
     width:100%;
-    padding:11px 14px;
+    padding:12px 14px;
     border:1.5px solid var(--cinza-linha);
     border-radius:12px;
-    font-size:14px;
+    font-size:16px;
     font-family:'Inter',sans-serif;
     background:#FBFDFF;
-    transition:border-color .15s, box-shadow .15s;
   }
   input:focus, select:focus{
     outline:none;
     border-color:var(--azul-claro-forte);
     box-shadow:0 0 0 3px rgba(94,168,229,0.2);
   }
-  .field{margin-bottom:16px;}
-  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .hint{font-size:12px;color:var(--azul-claro-forte);margin-top:6px;font-weight:600;}
+  .field{margin-bottom:12px;}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .badge-info{font-size:12px;color:var(--azul-claro-forte);margin-top:4px;font-weight:600;line-height:1.3;}
 
-  .toggle-btn{
-    background:none;
-    border:none;
-    color:var(--azul-claro-forte);
-    font-size:12px;
-    font-weight:700;
-    cursor:pointer;
-    padding:0;
-    margin-top:4px;
-    text-decoration:underline;
-  }
-  .hidden{display:none !important;}
-
-  .recursos-list{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-  }
-  @media (max-width:520px){.recursos-list{grid-template-columns:1fr;}}
-  .recurso-item{
+  .option-list{display:grid;grid-template-columns:repeat(auto-fit, minmax(170px, 1fr));gap:12px;}
+  .option-item{
     display:flex;
-    align-items:center;
-    gap:10px;
-    padding:12px 14px;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:5px;
+    padding:14px 16px;
     border:1.5px solid var(--cinza-linha);
     border-radius:14px;
     cursor:pointer;
-    transition:border-color .15s, background .15s;
-    font-size:13px;
+    font-size:14.5px;
+    position:relative;
   }
-  .recurso-item:has(input:checked){
+  .option-item:has(input:checked){
     border-color:var(--azul-claro-forte);
     background:var(--azul-claro-suave);
   }
-  .recurso-item input{width:16px;height:16px;accent-color:var(--azul-claro-forte);flex-shrink:0;}
-  .recurso-item .r-name{font-weight:600;flex:1;}
-  .recurso-item .r-price{color:var(--cinza-texto);font-size:12px;white-space:nowrap;}
+  .option-item input{position:absolute;top:14px;right:14px;width:18px;height:18px;accent-color:var(--azul-claro-forte);}
+  .option-item .o-name{font-weight:600;padding-right:24px;line-height:1.25;}
+  .option-item .o-price{color:var(--cinza-texto);font-size:13px;}
 
-  .divider{border:none;border-top:1px solid var(--cinza-linha);margin:20px 0;}
+  .divider{border:none;border-top:1px solid var(--cinza-linha);margin:18px 0;}
 
-  /* Painel resumo */
-  .summary{
-    position:sticky;
-    top:24px;
-    background:var(--verde-escuro);
-    color:#fff;
-    border-radius:var(--radius);
-    padding:26px;
-    box-shadow:0 10px 30px rgba(15,76,58,0.25);
-  }
-  .summary h2{color:#fff;font-size:18px;margin-bottom:18px;}
-  .summary-line{
+  .toggle-block{margin-top:10px;}
+  .extra-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;margin-top:12px;}
+  .extra-grid .toggle-block{margin-top:0;}
+  .toggle-header{
     display:flex;
-    justify-content:space-between;
-    font-size:13px;
-    padding:7px 0;
-    color:#CFE8DD;
-  }
-  .summary-line.total-auto{
-    border-top:1px solid rgba(255,255,255,0.15);
-    margin-top:8px;
-    padding-top:12px;
-    font-weight:700;
-    color:#fff;
+    align-items:center;
+    gap:10px;
+    padding:11px 13px;
+    border:1.5px solid var(--cinza-linha);
+    border-radius:14px;
+    cursor:pointer;
     font-size:14px;
   }
-  .periodicidade{
-    display:flex;
-    gap:8px;
-    margin:18px 0 14px;
+  .toggle-header:has(input:checked){
+    border-color:var(--verde-escuro);
+    background:#E4F0EC;
   }
+  .toggle-header input{width:18px;height:18px;accent-color:var(--verde-escuro);flex-shrink:0;}
+  .toggle-header .o-name{font-weight:700;flex:1;color:var(--verde-escuro);}
+  .toggle-body{
+    margin-top:9px;
+    padding:12px;
+    background:#FBFDFF;
+    border:1px dashed var(--cinza-linha);
+    border-radius:14px;
+  }
+  .toggle-body.hidden{display:none;}
+
+  /* Summary */
+  .summary{
+    background:#0F3355;
+    color:#fff;
+    border-radius:var(--radius);
+    padding:18px;
+  }
+  .summary h2{color:#fff;font-size:17px;margin-bottom:10px;}
+  .summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;}
+  .summary-line{display:flex;justify-content:space-between;font-size:14px;padding:5px 0;color:#CFE8DD;}
+  .summary-line.total-auto{
+    border-top:1px solid rgba(255,255,255,0.15);
+    margin-top:6px;padding-top:9px;font-weight:700;color:#fff;font-size:15px;
+  }
+  .summary-line.free-item span:last-child{color:var(--azul-claro);font-weight:700;font-size:12.5px;}
+  .periodicidade{display:flex;gap:8px;margin:12px 0 10px;}
   .periodicidade label{
-    flex:1;
-    text-align:center;
-    background:rgba(255,255,255,0.08);
-    border:1.5px solid rgba(255,255,255,0.2);
-    border-radius:12px;
-    padding:9px 4px;
-    font-size:12px;
-    cursor:pointer;
-    margin:0;
-    color:#CFE8DD;
-    transition:all .15s;
+    flex:1;text-align:center;background:rgba(255,255,255,0.08);
+    border:1.5px solid rgba(255,255,255,0.2);border-radius:12px;
+    padding:8px 4px;font-size:12.5px;cursor:pointer;margin:0;color:#CFE8DD;
   }
   .periodicidade input{display:none;}
-  .periodicidade label:has(input:checked){
-    background:var(--azul-claro-forte);
-    border-color:var(--azul-claro-forte);
-    color:#fff;
-  }
-  .ajuste-box{
-    background:rgba(255,255,255,0.06);
-    border-radius:14px;
-    padding:14px;
-    margin-top:10px;
-  }
-  .ajuste-box .field-row{margin-bottom:10px;}
-  .ajuste-box label{color:#CFE8DD;font-size:12px;}
+  .periodicidade label:has(input:checked){background:var(--azul-claro-forte);border-color:var(--azul-claro-forte);color:#fff;}
+
+  .ajuste-box{background:rgba(255,255,255,0.06);border-radius:14px;padding:11px;margin-top:8px;}
+  .ajuste-box .field-row{margin-bottom:8px;}
+  .ajuste-box label{color:#CFE8DD;font-size:12.5px;}
   .ajuste-box input, .ajuste-box select{
-    background:rgba(255,255,255,0.1);
-    border:1.5px solid rgba(255,255,255,0.2);
-    color:#fff;
-    font-size:13px;
-  }
-  .ajuste-box input::placeholder{color:rgba(255,255,255,0.5);}
-  .ajuste-box input:focus, .ajuste-box select:focus{
-    border-color:var(--azul-claro);
-    box-shadow:0 0 0 3px rgba(94,168,229,0.25);
+    background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.2);color:#fff;font-size:14px;padding:9px 12px;
   }
   .ajuste-box select option{color:#000;}
 
-  .total-manual-wrap{margin-top:16px;}
+  .total-manual-wrap{margin-top:12px;}
+  .total-manual-wrap .lbl{display:flex;justify-content:space-between;align-items:center;}
   .total-manual-wrap input{
-    font-size:20px;
-    font-weight:800;
-    font-family:'Sora',sans-serif;
-    background:rgba(255,255,255,0.1);
-    border:1.5px solid rgba(255,255,255,0.25);
-    color:#fff;
-    padding:12px 14px;
+    font-size:18px;font-weight:800;font-family:'Sora',sans-serif;
+    background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.25);color:#fff;padding:10px 13px;
   }
-  .total-manual-wrap .lbl{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-  }
-  .reset-link{
-    font-size:11px;
-    color:var(--azul-claro);
-    cursor:pointer;
-    text-decoration:underline;
-    background:none;
-    border:none;
-    font-weight:600;
-  }
+  .reset-link{font-size:12.5px;color:var(--azul-claro);cursor:pointer;text-decoration:underline;background:none;border:none;font-weight:600;}
 
-  .final-box{
-    margin-top:20px;
-    background:var(--azul-claro);
-    border-radius:16px;
-    padding:18px 20px;
-    text-align:center;
-  }
+  .final-box{margin-top:14px;background:var(--azul-claro);border-radius:16px;padding:14px 16px;text-align:center;}
   .final-box .lbl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#0F3E63;}
-  .final-box .val{font-family:'Sora',sans-serif;font-size:30px;font-weight:800;color:#0B2540;margin-top:4px;}
-  .final-box .sub{font-size:11px;color:#0F3E63;margin-top:2px;}
+  .final-box .val{font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:#0B2540;margin-top:3px;}
+  .final-box .sub{font-size:11.5px;color:#0F3E63;margin-top:2px;}
 
-  .badge-info{
-    font-size:11px;
-    color:var(--azul-claro-forte);
-    margin-top:4px;
-    font-weight:600;
+  .nav-buttons{display:flex;gap:10px;margin-top:12px;}
+  .nav-btn{
+    flex:1;padding:13px;border-radius:14px;border:none;font-weight:700;font-size:15px;cursor:pointer;font-family:'Inter',sans-serif;
   }
+  .nav-btn.primary{background:var(--azul-claro-forte);color:#fff;}
+  .nav-btn.ghost{background:var(--branco);color:var(--cinza-texto);border:1.5px solid var(--cinza-linha);}
+  .nav-btn:disabled{opacity:.4;cursor:not-allowed;}
+  .hidden{display:none !important;}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="phone-wrap">
   <header>
-    <span class="eyebrow">Uso interno</span>
+    <span class="eyebrow">Uso interno · v2</span>
     <h1>Calculadora de Planos</h1>
-    <p>Monte o plano do cliente com base em emissões, recursos adicionais e periodicidade.</p>
   </header>
 
-  <div class="grid">
-    <div>
-      <!-- EMISSÕES -->
-      <div class="card">
-        <h2>Número de emissões</h2>
-        <p class="desc">Digite a quantidade desejada. Se não houver um plano tabelado exato, o valor é calculado automaticamente com base no unitário do plano seguinte.</p>
-        <div class="field">
-          <label for="emissoes">Quantidade de emissões</label>
-          <input type="number" id="emissoes" min="0" placeholder="Ex: 1100">
-          <div class="badge-info" id="emissoesInfo"></div>
-        </div>
-        <button type="button" class="toggle-btn" id="btnCustomUnit">Definir valor unitário personalizado (acima de 5.000)</button>
-        <div class="field hidden" id="customUnitWrap" style="margin-top:10px;">
-          <label for="customUnit">Valor unitário por emissão (R$)</label>
-          <input type="number" id="customUnit" min="0" step="0.0001" placeholder="Ex: 0.25">
-        </div>
+  <div class="steps-nav">
+    <button type="button" class="step-btn active" data-step="1">1. Emissões</button>
+    <button type="button" class="step-btn" data-step="2">2. Recursos</button>
+    <button type="button" class="step-btn" data-step="3">3. Resumo</button>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step-panel" id="step1">
+    <div class="card">
+      <h2>Número de emissões</h2>
+      <p class="desc">Escolha um plano padrão ou digite uma quantidade personalizada (o campo abaixo sobrescreve a seleção).</p>
+      <div class="option-list" id="emissoesPresetList"></div>
+      <div class="field" style="margin-top:14px;">
+        <label for="emissoesCustom">Quantidade personalizada</label>
+        <input type="number" id="emissoesCustom" min="0" placeholder="Ex: 1200">
+        <div class="badge-info" id="emissoesInfo"></div>
       </div>
-
-      <!-- RECURSOS -->
-      <div class="card">
-        <h2>Recursos adicionais</h2>
-        <p class="desc">Opcionais. Cada recurso é único no plano (exceto Busca garantida).</p>
-        <div class="recursos-list" id="recursosList"></div>
-
-        <hr class="divider">
-
-        <div class="field-row">
-          <div class="field">
-            <label for="buscaQtd">Busca garantida (nº de buscas)</label>
-            <input type="number" id="buscaQtd" min="0" placeholder="Ex: 50">
-          </div>
-          <div class="field">
-            <label>Valor (R$ 0,97/busca)</label>
-            <input type="text" id="buscaValorDisplay" disabled placeholder="R$ 0,00">
-          </div>
-        </div>
-
-        <hr class="divider">
-
-        <div class="field-row">
-          <div class="field">
-            <label for="ciotQtd">Recurso CIOT — quantidade</label>
-            <input type="number" id="ciotQtd" min="0" placeholder="Ex: 350">
-            <div class="badge-info" id="ciotInfo"></div>
-          </div>
-          <div class="field">
-            <label>Valor CIOT</label>
-            <input type="text" id="ciotValorDisplay" disabled placeholder="R$ 0,00">
-          </div>
-        </div>
-
-        <hr class="divider">
-
-        <div class="field">
-          <label for="valePedagio">Vale-pedágio (valor manual)</label>
-          <input type="number" id="valePedagio" min="0" placeholder="Ex: 150.00">
-        </div>
+      <button type="button" class="toggle-btn-link" id="btnCustomUnit" style="background:none;border:none;color:var(--azul-claro-forte);font-size:12px;font-weight:700;cursor:pointer;padding:0;text-decoration:underline;">Definir valor unitário personalizado (acima de 5.000)</button>
+      <div class="field hidden" id="customUnitWrap" style="margin-top:10px;">
+        <label for="customUnit">Valor unitário por emissão (R$)</label>
+        <input type="number" id="customUnit" min="0" step="0.0001" placeholder="Ex: 0.25">
       </div>
     </div>
+  </div>
 
-    <!-- RESUMO -->
+  <!-- STEP 2 -->
+  <div class="step-panel hidden" id="step2">
+    <div class="card">
+      <h2>Recursos adicionais</h2>
+      <p class="desc">Opcionais. Cada recurso é único no plano.</p>
+      <div class="option-list" id="recursosList"></div>
+
+      <div class="extra-grid">
+      <div class="toggle-block">
+        <label class="toggle-header">
+          <input type="checkbox" id="ciotEnabled">
+          <span class="o-name">Recurso CIOT</span>
+        </label>
+        <div class="toggle-body hidden" id="ciotBody">
+          <div class="ciot-auto-display">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:13px;color:var(--cinza-texto);font-weight:600;">Quantidade de CIOTs</span>
+              <button type="button" class="reset-link" id="btnCiotManual">Personalizar</button>
+            </div>
+            <div id="ciotValueDisplay" style="font-weight:800;font-size:19px;color:var(--verde-escuro);margin-top:4px;font-family:'Sora',sans-serif;"></div>
+            <div class="badge-info" id="ciotInfo"></div>
+          </div>
+          <div class="hidden" id="ciotManualFields" style="margin-top:12px;">
+            <div class="option-list" id="ciotPresetList"></div>
+            <div class="field" style="margin-top:10px;margin-bottom:0;">
+              <label for="ciotCustom">Quantidade personalizada</label>
+              <input type="number" id="ciotCustom" min="0" placeholder="Ex: 550">
+            </div>
+            <button type="button" class="reset-link" id="btnCiotAuto" style="margin-top:9px;">Usar automático (vincular às emissões)</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="toggle-block">
+        <label class="toggle-header">
+          <input type="checkbox" id="pedagioEnabled">
+          <span class="o-name">Vale-pedágio</span>
+        </label>
+        <div class="toggle-body hidden" id="pedagioBody">
+          <div class="option-list" id="pedagioPresetList"></div>
+          <div class="field" style="margin-top:10px;margin-bottom:0;">
+            <label for="pedagioCustom">Valor gasto em VPO/mês (R$)</label>
+            <input type="number" id="pedagioCustom" min="0" placeholder="Ex: 8000">
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:10px;border-top:1px dashed var(--cinza-linha);">
+            <span style="font-size:13px;color:var(--cinza-texto);font-weight:600;">Valor do recurso</span>
+            <span id="pedagioValueDisplay" style="font-weight:800;font-size:17px;color:var(--verde-escuro);font-family:'Sora',sans-serif;">R$ 0,00</span>
+          </div>
+          <div class="badge-info" id="pedagioInfo"></div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step-panel hidden" id="step3">
     <div class="summary">
-      <h2>Resumo do plano</h2>
-      <div class="summary-line"><span>Emissões</span><span id="sEmissoes">R$ 0,00</span></div>
-      <div class="summary-line"><span>Recursos fixos</span><span id="sRecursos">R$ 0,00</span></div>
-      <div class="summary-line"><span>Busca garantida</span><span id="sBusca">R$ 0,00</span></div>
-      <div class="summary-line"><span>CIOT</span><span id="sCiot">R$ 0,00</span></div>
-      <div class="summary-line"><span>Vale-pedágio</span><span id="sPedagio">R$ 0,00</span></div>
-      <div class="summary-line total-auto"><span>Total automático (mensal)</span><span id="sAuto">R$ 0,00</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:14px;">
+        <h2 style="margin-bottom:0;">Resumo do plano</h2>
+        <button type="button" id="btnCopyProposal" style="flex:none;background:var(--azul-claro-forte);color:#fff;border:none;padding:9px 14px;border-radius:10px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;">Copiar proposta</button>
+      </div>
+      <div class="summary-grid">
+        <div class="summary-col-left">
+          <div class="summary-line"><span>Emissões</span><span id="sEmissoes">R$ 0,00</span></div>
+          <div id="sRecursosList"></div>
+          <div class="summary-line"><span>CIOT</span><span id="sCiot">R$ 0,00</span></div>
+          <div class="summary-line"><span>Vale-pedágio</span><span id="sPedagio">R$ 0,00</span></div>
+          <div class="summary-line total-auto"><span>Total automático (mensal)</span><span id="sAuto">R$ 0,00</span></div>
 
-      <div class="ajuste-box">
-        <div class="field-row">
-          <div class="field">
-            <label for="descValor">Desconto</label>
-            <input type="number" id="descValor" min="0" placeholder="0">
-          </div>
-          <div class="field">
-            <label for="descTipo">Tipo</label>
-            <select id="descTipo">
-              <option value="R$">R$</option>
-              <option value="%">%</option>
-            </select>
+          <div class="ajuste-box">
+            <div class="field-row">
+              <div class="field">
+                <label for="descValor">Desconto</label>
+                <input type="number" id="descValor" min="0" placeholder="0">
+              </div>
+              <div class="field">
+                <label for="descTipo">Tipo</label>
+                <select id="descTipo"><option value="R$">R$</option><option value="%">%</option></select>
+              </div>
+            </div>
+            <div class="field-row" style="margin-bottom:0;">
+              <div class="field" style="margin-bottom:0;">
+                <label for="acrValor">Acréscimo</label>
+                <input type="number" id="acrValor" min="0" placeholder="0">
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label for="acrTipo">Tipo</label>
+                <select id="acrTipo"><option value="R$">R$</option><option value="%">%</option></select>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="field-row" style="margin-bottom:0;">
-          <div class="field" style="margin-bottom:0;">
-            <label for="acrValor">Acréscimo</label>
-            <input type="number" id="acrValor" min="0" placeholder="0">
-          </div>
-          <div class="field" style="margin-bottom:0;">
-            <label for="acrTipo">Tipo</label>
-            <select id="acrTipo">
-              <option value="R$">R$</option>
-              <option value="%">%</option>
-            </select>
-          </div>
-        </div>
-      </div>
 
-      <div class="total-manual-wrap">
-        <div class="lbl">
-          <label for="totalManual" style="color:#CFE8DD;">Total mensal (editável)</label>
-          <button type="button" class="reset-link" id="btnResetManual">recalcular</button>
-        </div>
-        <input type="text" id="totalManual" placeholder="R$ 0,00">
-      </div>
+        <div class="summary-col-right">
+          <div class="total-manual-wrap" style="margin-top:0;">
+            <div class="lbl">
+              <label for="totalManual" style="color:#CFE8DD;">Total mensal (editável)</label>
+              <button type="button" class="reset-link hidden" id="btnResetManual">recalcular</button>
+            </div>
+            <input type="text" id="totalManual" placeholder="R$ 0,00">
+          </div>
 
-      <div class="periodicidade">
-        <label><input type="radio" name="periodo" value="1" checked> Mensal</label>
-        <label><input type="radio" name="periodo" value="3"> Trimestral</label>
-        <label><input type="radio" name="periodo" value="12"> Anual</label>
-      </div>
+          <div class="periodicidade">
+            <label><input type="radio" name="periodo" value="1" checked> Mensal</label>
+            <label><input type="radio" name="periodo" value="3"> Trimestral</label>
+            <label><input type="radio" name="periodo" value="12"> Anual</label>
+          </div>
 
       <div class="final-box">
         <div class="lbl">Valor final do plano</div>
         <div class="val" id="totalFinal">R$ 0,00</div>
         <div class="sub" id="totalFinalSub">mensal</div>
       </div>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button type="button" class="nav-btn ghost" id="btnBack">Voltar</button>
+    <button type="button" class="nav-btn primary" id="btnNext">Avançar</button>
   </div>
 </div>
 
 <script>
 // ---------- Dados ----------
 const tiersEmissoes = [
-  {limit:30, price:77},
-  {limit:100, price:137},
-  {limit:200, price:207},
-  {limit:300, price:267},
-  {limit:400, price:337},
-  {limit:500, price:367},
-  {limit:600, price:407},
-  {limit:700, price:437},
-  {limit:800, price:467},
-  {limit:900, price:507},
-  {limit:1000, price:547},
-  {limit:1500, price:657},
-  {limit:2000, price:757},
-  {limit:2500, price:847},
-  {limit:3000, price:917},
-  {limit:3500, price:987},
-  {limit:4000, price:1057},
-  {limit:4500, price:1097},
-  {limit:5000, price:1137},
+  {limit:30, price:77},{limit:100, price:137},{limit:200, price:207},{limit:300, price:267},
+  {limit:400, price:337},{limit:500, price:367},{limit:600, price:407},{limit:700, price:437},
+  {limit:800, price:467},{limit:900, price:507},{limit:1000, price:547},{limit:1500, price:657},
+  {limit:2000, price:757},{limit:2500, price:847},{limit:3000, price:917},{limit:3500, price:987},
+  {limit:4000, price:1057},{limit:4500, price:1097},{limit:5000, price:1137},
 ];
+const emissoesPresets = [30,100,200,300]; // checkboxes rápidos do modal 1
 
 const ciotTiers = [
-  {limit:30, price:77},
-  {limit:100, price:97},
-  {limit:200, price:147},
-  {limit:400, price:197},
+  {limit:30, price:77},{limit:100, price:97},{limit:200, price:147},{limit:400, price:197},
+];
+const ciotPresets = [30,100,200,300,400];
+
+const pedagioTiers = [
+  {limit:5000, price:297},{limit:10000, price:347},{limit:20000, price:497},{limit:30000, price:647},
 ];
 
 const recursosFixos = [
   {id:'edi', nome:'Integração EDI', preco:67},
-  {id:'averb', nome:'Averbação automática', preco:47},
+  {id:'averb', nome:'Averbação automática', preco:47, msg:'Averbação de carga automática'},
   {id:'fin', nome:'Controle financeiro', preco:37},
   {id:'lote', nome:'Emissão em lote', preco:37},
   {id:'frete', nome:'Tabela de frete', preco:37},
@@ -432,80 +400,201 @@ const recursosFixos = [
 
 const fmt = v => 'R$ ' + (v||0).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
 
-// ---------- Render recursos ----------
+// ---------- Render opções ----------
+const emissoesPresetList = document.getElementById('emissoesPresetList');
+emissoesPresets.forEach(limit=>{
+  const tier = tiersEmissoes.find(t=>t.limit===limit);
+  const el = document.createElement('label');
+  el.className = 'option-item';
+  el.innerHTML = `
+    <input type="radio" name="emissoesPreset" value="${limit}">
+    <span class="o-name">Até ${limit.toLocaleString('pt-BR')} emissões</span>
+    <span class="o-price">${fmt(tier.price)}</span>
+  `;
+  emissoesPresetList.appendChild(el);
+});
+
 const recursosList = document.getElementById('recursosList');
 recursosFixos.forEach(r=>{
   const el = document.createElement('label');
-  el.className = 'recurso-item';
+  el.className = 'option-item';
   el.innerHTML = `
     <input type="checkbox" data-preco="${r.preco}" id="rec_${r.id}">
-    <span class="r-name">${r.nome}</span>
-    <span class="r-price">${fmt(r.preco)}</span>
+    <span class="o-name">${r.nome}</span>
+    <span class="o-price">${fmt(r.preco)}</span>
   `;
   recursosList.appendChild(el);
 });
 
+const ciotPresetList = document.getElementById('ciotPresetList');
+ciotPresets.forEach(limit=>{
+  const tier = ciotTiers.find(t=>t.limit===limit) || {price:197};
+  const el = document.createElement('label');
+  el.className = 'option-item';
+  el.innerHTML = `
+    <input type="radio" name="ciotPreset" value="${limit}">
+    <span class="o-name">Até ${limit} CIOTs</span>
+    <span class="o-price">${fmt(tier.price)}</span>
+  `;
+  ciotPresetList.appendChild(el);
+});
+
+const pedagioPresetList = document.getElementById('pedagioPresetList');
+pedagioTiers.forEach(t=>{
+  const el = document.createElement('label');
+  el.className = 'option-item';
+  el.innerHTML = `
+    <input type="radio" name="pedagioPreset" value="${t.limit}">
+    <span class="o-name">Até ${fmt(t.limit)}/mês</span>
+    <span class="o-price">${fmt(t.price)}</span>
+  `;
+  pedagioPresetList.appendChild(el);
+});
+
 // ---------- Elementos ----------
-const emissoesInput = document.getElementById('emissoes');
+const emissoesCustom = document.getElementById('emissoesCustom');
 const emissoesInfo = document.getElementById('emissoesInfo');
 const btnCustomUnit = document.getElementById('btnCustomUnit');
 const customUnitWrap = document.getElementById('customUnitWrap');
 const customUnitInput = document.getElementById('customUnit');
 
-const buscaQtd = document.getElementById('buscaQtd');
-const buscaValorDisplay = document.getElementById('buscaValorDisplay');
-
-const ciotQtd = document.getElementById('ciotQtd');
+const ciotEnabled = document.getElementById('ciotEnabled');
+const ciotBody = document.getElementById('ciotBody');
+const ciotCustom = document.getElementById('ciotCustom');
 const ciotInfo = document.getElementById('ciotInfo');
-const ciotValorDisplay = document.getElementById('ciotValorDisplay');
 
-const valePedagio = document.getElementById('valePedagio');
+const pedagioEnabled = document.getElementById('pedagioEnabled');
+const pedagioBody = document.getElementById('pedagioBody');
+const pedagioCustom = document.getElementById('pedagioCustom');
 
 const descValor = document.getElementById('descValor');
 const descTipo = document.getElementById('descTipo');
 const acrValor = document.getElementById('acrValor');
 const acrTipo = document.getElementById('acrTipo');
-
 const totalManual = document.getElementById('totalManual');
 const btnResetManual = document.getElementById('btnResetManual');
 
 const sEmissoes = document.getElementById('sEmissoes');
-const sRecursos = document.getElementById('sRecursos');
-const sBusca = document.getElementById('sBusca');
+const sRecursosList = document.getElementById('sRecursosList');
 const sCiot = document.getElementById('sCiot');
 const sPedagio = document.getElementById('sPedagio');
 const sAuto = document.getElementById('sAuto');
 const totalFinal = document.getElementById('totalFinal');
 const totalFinalSub = document.getElementById('totalFinalSub');
 
-let manualOverride = false; // se true, totalManual dita o valor ajustado
+let manualOverride = false;
 let suppressEvents = false;
 
-btnCustomUnit.addEventListener('click', ()=>{
-  customUnitWrap.classList.toggle('hidden');
+// ---------- Grupo exclusivo: radio + input personalizado que sobrescreve ----------
+function setupExclusiveGroup(radioName, customInputEl){
+  document.querySelectorAll(`input[name="${radioName}"]`).forEach(r=>{
+    r.addEventListener('change', ()=>{
+      if(suppressEvents) return;
+      customInputEl.value = '';
+      calcAll();
+    });
+  });
+  customInputEl.addEventListener('input', ()=>{
+    if(suppressEvents) return;
+    if(customInputEl.value !== ''){
+      document.querySelectorAll(`input[name="${radioName}"]`).forEach(r=> r.checked = false);
+    }
+    calcAll();
+  });
+}
+setupExclusiveGroup('emissoesPreset', emissoesCustom);
+setupExclusiveGroup('pedagioPreset', pedagioCustom);
+
+// CIOT: grupo exclusivo com fallback automático para a quantidade de emissões
+document.querySelectorAll('input[name="ciotPreset"]').forEach(r=>{
+  r.addEventListener('change', ()=>{
+    if(suppressEvents) return;
+    ciotCustom.value = '';
+    calcAll();
+  });
+});
+ciotCustom.addEventListener('input', ()=>{
+  if(suppressEvents) return;
+  if(ciotCustom.value !== ''){
+    document.querySelectorAll('input[name="ciotPreset"]').forEach(r=> r.checked = false);
+  }
+  calcAll();
 });
 
-// ---------- Cálculos ----------
+const btnCiotManual = document.getElementById('btnCiotManual');
+const ciotManualFields = document.getElementById('ciotManualFields');
+const btnCiotAuto = document.getElementById('btnCiotAuto');
+
+btnCiotManual.addEventListener('click', ()=>{
+  ciotManualFields.classList.toggle('hidden');
+});
+btnCiotAuto.addEventListener('click', ()=>{
+  ciotCustom.value = '';
+  document.querySelectorAll('input[name="ciotPreset"]').forEach(r=> r.checked = false);
+  ciotManualFields.classList.add('hidden');
+  calcAll();
+});
+
+function isCiotManual(){
+  return ciotCustom.value !== '' || !!document.querySelector('input[name="ciotPreset"]:checked');
+}
+function getCiotQty(emissoesQty){
+  if(ciotCustom.value !== '') return parseFloat(ciotCustom.value) || 0;
+  const checked = document.querySelector('input[name="ciotPreset"]:checked');
+  if(checked) return parseFloat(checked.value);
+  return emissoesQty || 0;
+}
+
+function getGroupValue(radioName, customInputEl){
+  if(customInputEl.value !== '') return parseFloat(customInputEl.value) || 0;
+  const checked = document.querySelector(`input[name="${radioName}"]:checked`);
+  return checked ? parseFloat(checked.value) : 0;
+}
+
+btnCustomUnit.addEventListener('click', ()=> customUnitWrap.classList.toggle('hidden'));
+
+ciotEnabled.addEventListener('change', ()=>{
+  ciotBody.classList.toggle('hidden', !ciotEnabled.checked);
+  if(!ciotEnabled.checked){
+    document.querySelectorAll('input[name="ciotPreset"]').forEach(r=> r.checked=false);
+    ciotCustom.value = '';
+    ciotManualFields.classList.add('hidden');
+  }
+  calcAll();
+});
+pedagioEnabled.addEventListener('change', ()=>{
+  pedagioBody.classList.toggle('hidden', !pedagioEnabled.checked);
+  if(!pedagioEnabled.checked){
+    document.querySelectorAll('input[name="pedagioPreset"]').forEach(r=> r.checked=false);
+    pedagioCustom.value = '';
+  }
+  calcAll();
+});
+
+// ---------- Cálculos (mesma regra da v1) ----------
 function calcEmissoes(qty, customUnit){
   if(!qty || qty<=0) return {value:0, info:'', error:false};
   const exact = tiersEmissoes.find(t=>t.limit===qty);
   if(exact) return {value:exact.price, info:`Plano tabelado (até ${exact.limit.toLocaleString('pt-BR')} emissões)`, error:false};
-
   if(qty < 300){
     return {value:0, info:'Personalizado só é permitido acima de 300 emissões. Selecione um valor tabelado (30, 100, 200 ou 300).', error:true};
   }
-
   if(qty>5000){
     const unit = (customUnit && customUnit>0) ? customUnit : (1137/5000);
     return {value: unit*qty, info:`Personalizado acima de 5.000 · unitário ${fmt(unit)}`, error:false};
   }
-
-  // Interpolação linear entre o plano anterior e o seguinte (evita valor menor que plano inferior)
   const prev = [...tiersEmissoes].reverse().find(t=>t.limit<qty);
   const next = tiersEmissoes.find(t=>t.limit>qty);
   const fraction = (qty - prev.limit) / (next.limit - prev.limit);
   const value = prev.price + (next.price - prev.price) * fraction;
   return {value, info:`Personalizado · interpolado entre até ${prev.limit.toLocaleString('pt-BR')} (${fmt(prev.price)}) e até ${next.limit.toLocaleString('pt-BR')} (${fmt(next.price)})`, error:false};
+}
+
+function calcPedagio(spend){
+  if(!spend || spend<=0) return {value:0, info:''};
+  const tier = pedagioTiers.find(t=>spend<=t.limit);
+  if(tier) return {value:tier.price, info:`Tabelado · até ${fmt(tier.limit)}/mês`};
+  return {value: spend*0.0225, info:'Personalizado · 2,25% do valor gasto'};
 }
 
 function calcCiot(qty){
@@ -514,7 +603,7 @@ function calcCiot(qty){
   if(exact) return {value:exact.price, info:`Tabelado (até ${exact.limit})`};
   if(qty>400) return {value: qty*0.47, info:`Personalizado · R$0,47/CIOT`};
   const next = ciotTiers.find(t=>t.limit>qty);
-  return {value: next.price, info:`Dentro da faixa até ${next.limit}`};
+  return {value: next ? next.price : 197, info: next ? `Dentro da faixa até ${next.limit}` : 'Dentro da faixa até 400'};
 }
 
 function calcRecursosFixos(){
@@ -526,7 +615,7 @@ function calcRecursosFixos(){
 }
 
 function calcAll(){
-  const qtyEmissoes = parseFloat(emissoesInput.value) || 0;
+  const qtyEmissoes = getGroupValue('emissoesPreset', emissoesCustom);
   const customUnit = parseFloat(customUnitInput.value) || 0;
   const emissoesRes = calcEmissoes(qtyEmissoes, customUnit);
   emissoesInfo.textContent = emissoesRes.info;
@@ -535,41 +624,46 @@ function calcAll(){
 
   const recursosSum = calcRecursosFixos();
 
-  const buscaN = parseFloat(buscaQtd.value) || 0;
-  const buscaVal = buscaN * 0.97;
-  buscaValorDisplay.value = fmt(buscaVal);
+  let ciotVal = 0, ciotInfoTxt = '';
+  if(ciotEnabled.checked){
+    const ciotQty = getCiotQty(qtyEmissoes);
+    const ciotRes = calcCiot(ciotQty);
+    ciotVal = ciotRes.value;
+    const origem = isCiotManual() ? 'Personalizado' : 'Vinculado às emissões';
+    document.getElementById('ciotValueDisplay').textContent = fmt(ciotRes.value);
+    ciotInfoTxt = `${ciotQty.toLocaleString('pt-BR')} CIOTs · ${origem} · ${ciotRes.info}`;
+  }
+  ciotInfo.textContent = ciotInfoTxt;
 
-  const ciotN = parseFloat(ciotQtd.value) || 0;
-  const ciotRes = calcCiot(ciotN);
-  ciotInfo.textContent = ciotRes.info;
-  ciotValorDisplay.value = fmt(ciotRes.value);
+  let pedagioVal = 0;
+  if(pedagioEnabled.checked){
+    const spend = getGroupValue('pedagioPreset', pedagioCustom);
+    const pedagioRes = calcPedagio(spend);
+    pedagioVal = pedagioRes.value;
+    document.getElementById('pedagioValueDisplay').textContent = fmt(pedagioRes.value);
+    document.getElementById('pedagioInfo').textContent = spend>0
+      ? `Gasto informado: ${fmt(spend)} · ${pedagioRes.info}`
+      : 'Selecione uma faixa ou informe o valor gasto em VPO/mês.';
+  }
 
-  const pedagioVal = parseFloat(valePedagio.value) || 0;
-
-  const baseAuto = emissoesRes.value + recursosSum + buscaVal + ciotRes.value + pedagioVal;
+  const baseAuto = emissoesRes.value + recursosSum + ciotVal + pedagioVal;
 
   sEmissoes.textContent = fmt(emissoesRes.value);
-  sRecursos.textContent = fmt(recursosSum);
-  sBusca.textContent = fmt(buscaVal);
-  sCiot.textContent = fmt(ciotRes.value);
+  sRecursosList.innerHTML = recursosFixos
+    .filter(r=> document.getElementById('rec_'+r.id).checked)
+    .map(r=> `<div class="summary-line"><span>${r.nome}</span><span>${fmt(r.preco)}</span></div>`)
+    .join('');
+  sCiot.textContent = fmt(ciotVal);
   sPedagio.textContent = fmt(pedagioVal);
   sAuto.textContent = fmt(baseAuto);
 
-  // Ajustes
   let valorAjustado;
   if(manualOverride){
     valorAjustado = parseFloat((totalManual.value||'').replace(/[^\d,.-]/g,'').replace(',','.')) || 0;
     const diff = valorAjustado - baseAuto;
     suppressEvents = true;
-    if(diff >= 0){
-      acrTipo.value = 'R$';
-      acrValor.value = diff.toFixed(2);
-      descValor.value = '';
-    } else {
-      descTipo.value = 'R$';
-      descValor.value = Math.abs(diff).toFixed(2);
-      acrValor.value = '';
-    }
+    if(diff >= 0){ acrTipo.value='R$'; acrValor.value=diff.toFixed(2); descValor.value=''; }
+    else { descTipo.value='R$'; descValor.value=Math.abs(diff).toFixed(2); acrValor.value=''; }
     suppressEvents = false;
   } else {
     const dVal = parseFloat(descValor.value) || 0;
@@ -588,44 +682,95 @@ function calcAll(){
   totalFinalSub.textContent = periodo===1 ? 'mensal' : periodo===3 ? 'trimestral (cobrança única)' : 'anual (cobrança única)';
 }
 
-// ---------- Eventos ----------
-[emissoesInput, customUnitInput, buscaQtd, ciotQtd, valePedagio].forEach(el=>{
+// ---------- Eventos gerais ----------
+[emissoesCustom, customUnitInput, pedagioCustom].forEach(el=>{
   el.addEventListener('input', ()=>{ if(!suppressEvents) calcAll(); });
 });
-
 document.querySelectorAll('#recursosList input[type=checkbox]').forEach(cb=>{
   cb.addEventListener('change', ()=>{ if(!suppressEvents) calcAll(); });
 });
-
 [descValor, descTipo, acrValor, acrTipo].forEach(el=>{
-  el.addEventListener('input', ()=>{
-    if(suppressEvents) return;
-    manualOverride = false;
-    calcAll();
-  });
-  el.addEventListener('change', ()=>{
-    if(suppressEvents) return;
-    manualOverride = false;
-    calcAll();
-  });
+  const handler = ()=>{ if(suppressEvents) return; manualOverride=false; calcAll(); };
+  el.addEventListener('input', handler);
+  el.addEventListener('change', handler);
 });
-
 totalManual.addEventListener('input', ()=>{
   if(suppressEvents) return;
   manualOverride = true;
   calcAll();
 });
+btnResetManual.addEventListener('click', ()=>{ manualOverride=false; calcAll(); });
+document.querySelectorAll('input[name=periodo]').forEach(r=> r.addEventListener('change', calcAll));
 
-btnResetManual.addEventListener('click', ()=>{
-  manualOverride = false;
-  calcAll();
+// ---------- Navegação entre etapas (livre) ----------
+const steps = ['1','2','3'];
+let currentStep = '1';
+const stepBtns = document.querySelectorAll('.step-btn');
+const btnBack = document.getElementById('btnBack');
+const btnNext = document.getElementById('btnNext');
+
+function goToStep(step){
+  currentStep = step;
+  steps.forEach(s=>{
+    document.getElementById('step'+s).classList.toggle('hidden', s!==step);
+  });
+  stepBtns.forEach(b=>{
+    b.classList.toggle('active', b.dataset.step===step);
+    b.classList.toggle('done', steps.indexOf(b.dataset.step) < steps.indexOf(step));
+  });
+  btnBack.disabled = step === '1';
+  btnNext.textContent = step === '3' ? 'Concluído' : 'Avançar';
+  btnNext.disabled = step === '3';
+}
+
+stepBtns.forEach(b=> b.addEventListener('click', ()=> goToStep(b.dataset.step)));
+btnBack.addEventListener('click', ()=>{
+  const idx = steps.indexOf(currentStep);
+  if(idx>0) goToStep(steps[idx-1]);
+});
+btnNext.addEventListener('click', ()=>{
+  const idx = steps.indexOf(currentStep);
+  if(idx<steps.length-1) goToStep(steps[idx+1]);
 });
 
-document.querySelectorAll('input[name=periodo]').forEach(r=>{
-  r.addEventListener('change', calcAll);
-});
-
+goToStep('1');
 calcAll();
+
+// ---------- Copiar proposta ----------
+function buildProposalMessage(){
+  const linhas = [];
+  const qtyEmissoes = getGroupValue('emissoesPreset', emissoesCustom);
+  if(qtyEmissoes>0){
+    linhas.push(`✓ ${qtyEmissoes.toLocaleString('pt-BR')} Emissões`);
+    linhas.push('✓ Emissão de CTe');
+    linhas.push('✓ Emissão de MDFe');
+  }
+  recursosFixos.forEach(r=>{
+    if(document.getElementById('rec_'+r.id).checked) linhas.push(`✓ ${r.msg || r.nome}`);
+  });
+  if(ciotEnabled.checked) linhas.push('✓ Emissão de CIOT');
+  if(pedagioEnabled.checked) linhas.push('✓ Vale-pedágio');
+  linhas.push('✓ Suporte especializado');
+
+  const periodo = parseInt(document.querySelector('input[name=periodo]:checked').value);
+  const sufixo = periodo===1 ? '/mês' : periodo===3 ? '/trimestre' : '/ano';
+  const observacao = '*_O número de emissões é o total entre CTe e MDFe_*';
+
+  return `*Plano Mensal*\n\n${linhas.join('\n')}\n\n*${totalFinal.textContent}${sufixo}*\n\n${observacao}`;
+}
+
+const btnCopyProposal = document.getElementById('btnCopyProposal');
+btnCopyProposal.addEventListener('click', async ()=>{
+  const msg = buildProposalMessage();
+  const original = btnCopyProposal.textContent;
+  try{
+    await navigator.clipboard.writeText(msg);
+    btnCopyProposal.textContent = 'Copiado!';
+  }catch(e){
+    window.prompt('Copie manualmente (Ctrl+C):', msg);
+  }
+  setTimeout(()=>{ btnCopyProposal.textContent = original; }, 1800);
+});
 </script>
 </body>
 </html>
