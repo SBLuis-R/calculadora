@@ -301,10 +301,7 @@
   <!-- STEP 3 -->
   <div class="step-panel hidden" id="step3">
     <div class="summary">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:14px;">
-        <h2 style="margin-bottom:0;">Resumo do plano</h2>
-        <button type="button" id="btnCopyProposal" style="flex:none;background:var(--azul-claro-forte);color:#fff;border:none;padding:9px 14px;border-radius:10px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;">Copiar proposta</button>
-      </div>
+      <h2 style="margin-bottom:14px;">Resumo do plano</h2>
 
       <div class="summary-grid">
         <div class="summary-col-left">
@@ -386,7 +383,8 @@ const ciotTiers = [
 const ciotPresets = [30,100,200,300,400];
 
 const pedagioTiers = [
-  {limit:1000, price:197},{limit:5000, price:297},{limit:10000, price:347},{limit:20000, price:497},{limit:30000, price:647},
+  {limit:1000, price:197},
+  {limit:5000, price:297},{limit:10000, price:347},{limit:20000, price:497},{limit:30000, price:647},
 ];
 
 const recursosFixos = [
@@ -732,7 +730,7 @@ btnBack.addEventListener('click', ()=>{
 });
 btnNext.addEventListener('click', ()=>{
   if(currentStep === '3'){
-    btnCopyProposal.click();
+    copyProposal();
     return;
   }
   const idx = steps.indexOf(currentStep);
@@ -743,6 +741,12 @@ goToStep('1');
 calcAll();
 
 // ---------- Copiar proposta ----------
+function formatVpoLimit(spend){
+  const tier = pedagioTiers.find(t=>spend<=t.limit);
+  if(tier) return `Até ${tier.limit/1000}k`;
+  return `Até ${fmt(spend)}`;
+}
+
 function buildProposalMessage(){
   const linhas = [];
   const qtyEmissoes = getGroupValue('emissoesPreset', emissoesCustom);
@@ -751,11 +755,14 @@ function buildProposalMessage(){
     linhas.push('✓ Emissão de CTe');
     linhas.push('✓ Emissão de MDFe');
   }
+  if(ciotEnabled.checked) linhas.push('✓ Emissão de CIOT');
+  if(pedagioEnabled.checked){
+    const spend = getGroupValue('pedagioPreset', pedagioCustom);
+    linhas.push(`✓ Emissão de VPO (${formatVpoLimit(spend)})`);
+  }
   recursosFixos.forEach(r=>{
     if(document.getElementById('rec_'+r.id).checked) linhas.push(`✓ ${r.msg || r.nome}`);
   });
-  if(ciotEnabled.checked) linhas.push('✓ Emissão de CIOT');
-  if(pedagioEnabled.checked) linhas.push('✓ Vale-pedágio');
   linhas.push('✓ Suporte especializado');
 
   const periodo = parseInt(document.querySelector('input[name=periodo]:checked').value);
@@ -765,18 +772,17 @@ function buildProposalMessage(){
   return `*Plano Mensal*\n\n${linhas.join('\n')}\n\n*${totalFinal.textContent}${sufixo}*\n\n${observacao}`;
 }
 
-const btnCopyProposal = document.getElementById('btnCopyProposal');
-btnCopyProposal.addEventListener('click', async ()=>{
+async function copyProposal(){
   const msg = buildProposalMessage();
-  const original = btnCopyProposal.textContent;
+  const original = btnNext.textContent;
   try{
     await navigator.clipboard.writeText(msg);
-    btnCopyProposal.textContent = 'Copiado!';
+    btnNext.textContent = 'Copiado!';
   }catch(e){
     window.prompt('Copie manualmente (Ctrl+C):', msg);
   }
-  setTimeout(()=>{ btnCopyProposal.textContent = original; }, 1800);
-});
+  setTimeout(()=>{ btnNext.textContent = original; }, 1800);
+}
 </script>
 </body>
 </html>
