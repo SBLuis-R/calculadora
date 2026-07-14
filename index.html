@@ -742,9 +742,10 @@ calcAll();
 
 // ---------- Copiar proposta ----------
 function formatVpoLimit(spend){
-  const tier = pedagioTiers.find(t=>spend<=t.limit);
-  if(tier) return `Até ${tier.limit/1000}k`;
-  return `Até ${fmt(spend)}`;
+  if(!spend || spend<=0) return 'Até 0k';
+  const emK = spend/1000;
+  const texto = emK % 1 === 0 ? emK.toString() : emK.toLocaleString('pt-BR', {maximumFractionDigits:1});
+  return `Até ${texto}k`;
 }
 
 function buildProposalMessage(){
