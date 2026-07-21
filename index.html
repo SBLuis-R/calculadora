@@ -305,7 +305,7 @@
 
       <div class="summary-grid">
         <div class="summary-col-left">
-          <div class="summary-line"><span>Emissões</span><span id="sEmissoes">R$ 0,00</span></div>
+          <div class="summary-line"><span id="sEmissoesLabel">Emissões</span><span id="sEmissoes">R$ 0,00</span></div>
           <div id="sRecursosList"></div>
           <div class="summary-line" id="rowCiot"><span>CIOT</span><span id="sCiot">R$ 0,00</span></div>
           <div class="summary-line" id="rowPedagio"><span>Vale-pedágio</span><span id="sPedagio">R$ 0,00</span></div>
@@ -476,6 +476,7 @@ const totalManual = document.getElementById('totalManual');
 const btnResetManual = document.getElementById('btnResetManual');
 
 const sEmissoes = document.getElementById('sEmissoes');
+const sEmissoesLabel = document.getElementById('sEmissoesLabel');
 const sRecursosList = document.getElementById('sRecursosList');
 const sCiot = document.getElementById('sCiot');
 const sPedagio = document.getElementById('sPedagio');
@@ -650,6 +651,7 @@ function calcAll(){
   const baseAuto = emissoesRes.value + recursosSum + ciotVal + pedagioVal;
 
   sEmissoes.textContent = fmt(emissoesRes.value);
+  sEmissoesLabel.textContent = qtyEmissoes>0 ? `Emissões (${qtyEmissoes.toLocaleString('pt-BR')})` : 'Emissões';
   sRecursosList.innerHTML = recursosFixos
     .filter(r=> document.getElementById('rec_'+r.id).checked)
     .map(r=> `<div class="summary-line"><span>${r.nome}</span><span>${fmt(r.preco)}</span></div>`)
