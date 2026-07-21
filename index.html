@@ -307,8 +307,8 @@
         <div class="summary-col-left">
           <div class="summary-line"><span>Emissões</span><span id="sEmissoes">R$ 0,00</span></div>
           <div id="sRecursosList"></div>
-          <div class="summary-line"><span>CIOT</span><span id="sCiot">R$ 0,00</span></div>
-          <div class="summary-line"><span>Vale-pedágio</span><span id="sPedagio">R$ 0,00</span></div>
+          <div class="summary-line" id="rowCiot"><span>CIOT</span><span id="sCiot">R$ 0,00</span></div>
+          <div class="summary-line" id="rowPedagio"><span>Vale-pedágio</span><span id="sPedagio">R$ 0,00</span></div>
           <div class="summary-line total-auto"><span>Total automático (mensal)</span><span id="sAuto">R$ 0,00</span></div>
 
           <div class="ajuste-box">
@@ -395,7 +395,6 @@ const recursosFixos = [
   {id:'frete', nome:'Tabela de frete', preco:37},
   {id:'coleta', nome:'Ordem de coleta', preco:27},
   {id:'gnre', nome:'Emissão GNRe', preco:27},
-  {id:'app', nome:'Aplicativo para celular', preco:0},
 ];
 
 const fmt = v => 'R$ ' + (v||0).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
@@ -656,6 +655,8 @@ function calcAll(){
     .join('');
   sCiot.textContent = fmt(ciotVal);
   sPedagio.textContent = fmt(pedagioVal);
+  document.getElementById('rowCiot').classList.toggle('hidden', !ciotEnabled.checked);
+  document.getElementById('rowPedagio').classList.toggle('hidden', !pedagioEnabled.checked);
   sAuto.textContent = fmt(baseAuto);
 
   let valorAjustado;
